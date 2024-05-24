@@ -1,39 +1,52 @@
 import React, { useState } from 'react';
-import { Container, Grid, IconButton, Card, CardActionArea, CardMedia, CardContent, Typography, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Container, Grid, IconButton, Card, CardActionArea, CardMedia, Typography, Button, CircularProgress, Snackbar, Backdrop } from '@mui/material';
+import { Link, To, useNavigate } from 'react-router-dom';
 import './styles/GamePage.css';
 import scenarioImage from '../assets/scenario.webp';
 import pnjImage from '../assets/pnj.webp';
 import equipmentsImage from '../assets/equipments.webp';
 import skillsImage from '../assets/skills.webp';
-import generateIcon from '../assets/button-icon.png'; 
+import generateIcon from '../assets/button-icon.png';
+import { useGameContext } from '../context/GameContext';
 
 const GamePage: React.FC = () => {
-  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { generated, setGenerated } = useGameContext();
+  const navigate = useNavigate();
 
   const handleGenerateClick = async () => {
-    try {
-      const response = await fetch('https://mystic-quests-api.onrender.com/api/openai/generate?prompt=test');
-      const result = await response.json();
-      setData(result);
-    } catch (error) {
-      console.error('Error fetching data:', error);
+    if (!generated) {
+      setLoading(true);
+      setError('');
+
+      setTimeout(() => {
+        // Simulate successful data generation
+        setGenerated(true);
+        setLoading(false);
+      }, 4000);
     }
+    else{
+      setError("You've already generated a game - wait until tomorrow for a new attempt")
+    }
+  };
+
+  const handleCardClick = (path: To) => {
+    if (!generated) {
+      setError('Please generate the data first.');
+      return;
+    }
+    navigate(path);
   };
 
   return (
     <Container className="game-container">
-      <IconButton className="generate-button" onClick={handleGenerateClick}>
+      <IconButton className="generate-button" onClick={handleGenerateClick} disabled={loading}>
         <img src={generateIcon} alt="Generate" className="generate-icon" />
       </IconButton>
-      {data && (
-        <div className="generated-data">
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
-      )}
       <Grid container spacing={4} className="cards-container">
         <Grid item xs={12} sm={6}>
-          <Card className="game-card">
+          <Card className="game-card" onClick={() => handleCardClick('/scenario')}>
             <CardActionArea className="card-action-area">
               <CardMedia
                 component="img"
@@ -45,15 +58,13 @@ const GamePage: React.FC = () => {
                 <Typography gutterBottom variant="h5" component="div" className="card-title">
                   Scenario
                 </Typography>
-                <Link to="/scenario" style={{ textDecoration: 'none' }}>
-                  <Button variant="contained" color="primary">Go to Scenario</Button>
-                </Link>
+                <Button variant="contained" color="primary">Go to Scenario</Button>
               </div>
             </CardActionArea>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Card className="game-card">
+          <Card className="game-card" onClick={() => handleCardClick('/pnj')}>
             <CardActionArea className="card-action-area">
               <CardMedia
                 component="img"
@@ -65,15 +76,13 @@ const GamePage: React.FC = () => {
                 <Typography gutterBottom variant="h5" component="div" className="card-title">
                   PNJ
                 </Typography>
-                <Link to="/pnj" style={{ textDecoration: 'none' }}>
-                  <Button variant="contained" color="primary">Go to PNJ</Button>
-                </Link>
+                <Button variant="contained" color="primary">Go to PNJ</Button>
               </div>
             </CardActionArea>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Card className="game-card">
+          <Card className="game-card" onClick={() => handleCardClick('/equipments')}>
             <CardActionArea className="card-action-area">
               <CardMedia
                 component="img"
@@ -85,15 +94,13 @@ const GamePage: React.FC = () => {
                 <Typography gutterBottom variant="h5" component="div" className="card-title">
                   Equipments
                 </Typography>
-                <Link to="/equipments" style={{ textDecoration: 'none' }}>
-                  <Button variant="contained" color="primary">Go to Equipments</Button>
-                </Link>
+                <Button variant="contained" color="primary">Go to Equipments</Button>
               </div>
             </CardActionArea>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Card className="game-card">
+          <Card className="game-card" onClick={() => handleCardClick('/skills')}>
             <CardActionArea className="card-action-area">
               <CardMedia
                 component="img"
@@ -105,14 +112,24 @@ const GamePage: React.FC = () => {
                 <Typography gutterBottom variant="h5" component="div" className="card-title">
                   Skills
                 </Typography>
-                <Link to="/skills" style={{ textDecoration: 'none' }}>
-                  <Button variant="contained" color="primary">Go to Skills</Button>
-                </Link>
+                <Button variant="contained" color="primary">Go to Skills</Button>
               </div>
             </CardActionArea>
           </Card>
         </Grid>
       </Grid>
+      <Snackbar
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={() => setError('')}
+        message={error}
+      />
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Container>
   );
 };

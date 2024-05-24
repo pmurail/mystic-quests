@@ -10,6 +10,7 @@
       <change beforePath="$PROJECT_DIR$/../back-end/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../back-end/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../back-end/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../back-end/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../back-end/src/test/java/com/example/backend/BackEndApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$" beforeDir="false" afterPath="$PROJECT_DIR$" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
