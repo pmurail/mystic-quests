@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
@@ -15,6 +17,7 @@ const LoginPage = () => {
 
     if (email === mockEmail && password === mockPassword) {
       setMessage("You are authenticated");
+      navigate('/game');
     } else {
       setMessage("Invalid email or password");
     }
